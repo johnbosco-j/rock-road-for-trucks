@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ROCK – Road for Trucks</title>
+<meta name="description" content="ROCK is a truck-specific navigation system for India: dimension-based routing, offline maps, and automatic toll & fuel tracking.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@400;600;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<nav class="top"><div class="wrap">
+  <a class="logo" href="#"><i>▲</i>ROCK</a>
+  <div class="links"><a href="#problem">Problem</a><a href="#solution">Solution</a><a href="#modules">Modules</a><a href="#tech">Tech</a><a href="#business">Business</a><a href="#timeline">Timeline</a><a href="#process">Process</a><a href="#team">Team</a></div>
+  <a class="btn primary" href="app.html">Launch demo →</a>
+</div></nav>
+
+<header class="hero"><div class="wrap">
+  <div>
+    <p class="eyebrow">Project Driven Learning · CS24423 · The AfterMath</p>
+    <h1>Navigation built for <em>trucks</em>, not cars.</h1>
+    <p class="lead">ROCK (Road for Trucks) plans routes around your vehicle's height, weight and axles, keeps working offline, and logs tolls and fuel for you, so every trip is safer and cheaper.</p>
+    <div class="cta"><a class="btn primary" href="app.html">Try the live demo</a><a class="btn ghost" href="#solution">How it works</a></div>
+    <div class="stats"><div><b>12M+</b><span>heavy vehicle operators in India</span></div><div><b>0</b><span>bridge strikes in our simulated tests</span></div><div><b>1</b><span>app instead of many</span></div></div>
+  </div>
+  <div class="phone"><div class="screen">
+    <svg viewBox="0 0 400 500" width="100%" height="100%" aria-label="Route preview with truck restriction warning">
+      <defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#2c5a36"/><stop offset="1" stop-color="#0c1a14"/></linearGradient></defs>
+      <rect width="400" height="500" fill="url(#g)"/>
+      <path d="M-20 420 C80 380 120 300 200 290 S330 210 300 120 S380 40 430 20" stroke="#0a1510" stroke-width="40" fill="none"/>
+      <path d="M-20 420 C80 380 120 300 200 290 S330 210 300 120 S380 40 430 20" stroke="#b6e36b" stroke-width="6" fill="none" stroke-dasharray="2 14" stroke-linecap="round"/>
+      <circle cx="205" cy="290" r="11" fill="#b6e36b"/><circle cx="205" cy="290" r="22" fill="#b6e36b" opacity=".25"/>
+      <rect x="22" y="26" width="236" height="64" rx="18" fill="#fff" opacity=".12"/>
+      <text x="44" y="53" fill="#fff" font-size="13" font-family="Poppins">⚠ Low bridge ahead · 3.8 m</text>
+      <text x="44" y="75" fill="#ffb454" font-size="12" font-family="Poppins">Your truck 4.2 m – rerouting</text>
+      <rect x="22" y="420" width="356" height="58" rx="20" fill="#fff" opacity=".12"/>
+      <text x="44" y="446" fill="#fff" font-size="14" font-family="Poppins" font-weight="600">42 km · 54 min</text>
+      <text x="44" y="466" fill="#9db3a3" font-size="11" font-family="Poppins">Toll ₹ 310 · Fuel ≈ ₹ 1,450</text>
+    </svg>
+  </div></div>
+</div></header>
+
+<section class="s alt" id="problem"><div class="wrap">
+  <div class="head"><p class="eyebrow">The problem</p><h2>Car apps put 20-tonne vehicles on roads that can't take them.</h2><p style="margin-top:14px">Truck drivers in India depend on navigation apps made for cars. They ignore height, weight and axle limits, fail without signal and make drivers juggle several tools.</p></div>
+  <div class="grid g3 vs">
+    <div class="card bad"><div class="ic">⚠</div><h3>Safety &amp; compliance</h3><p>Routes through low bridges, narrow roads and restricted zones lead to accidents, fines and bridge strikes.</p></div>
+    <div class="card bad"><div class="ic">🧾</div><h3>Operational inefficiency</h3><p>No integrated mileage, toll or expense tracking. Fragmented workflows and extra paperwork.</p></div>
+    <div class="card bad"><div class="ic">📵</div><h3>Poor usability &amp; connectivity</h3><p>Cluttered interfaces, frequent crashes and no maps in remote areas.</p></div>
+  </div>
+</div></section>
+
+<section class="s" id="solution"><div class="wrap">
+  <div class="head"><p class="eyebrow">The solution</p><h2>One dependable co-pilot for the whole trip.</h2></div>
+  <div class="grid g4">
+    <div class="card"><div class="ic">📐</div><h3>Dimension-based routing</h3><p>Filters paths by height, weight and axle configuration, set once in your vehicle profile.</p></div>
+    <div class="card"><div class="ic">📴</div><h3>Offline functionality</h3><p>Pre-downloaded maps and a local cache keep navigation steady with no signal.</p></div>
+    <div class="card"><div class="ic">💸</div><h3>Automated logistics</h3><p>Tolls, fuel consumption and mileage are logged automatically per trip.</p></div>
+    <div class="card"><div class="ic">🛡</div><h3>Value proposition</h3><p>Fewer accidents, no restricted-zone fines and a calmer driver.</p></div>
+  </div>
+  <div class="grid g4" style="margin-top:20px">
+    <div class="card"><div class="ic">🗣</div><h3>Voice turn-by-turn</h3><p>Spoken directions and early warnings for restrictions ahead.</p></div>
+    <div class="card"><div class="ic">⛽</div><h3>Search along route</h3><p>Fuel, parking, rest and weigh stations along your route.</p></div>
+    <div class="card"><div class="ic">📣</div><h3>Driver feedback</h3><p>Report wrong roads and missing bridges to improve the map.</p></div>
+    <div class="card"><div class="ic">🎵</div><h3>TruckPlay</h3><p>Calm, offline-ready driving music built into the app.</p></div>
+  </div>
+  <div class="grid g2" style="margin-top:36px">
+    <div class="card"><h3>Objectives</h3><ul class="tick"><li><b>Safety:</b> minimise bridge strikes and impassable roads</li><li><b>Compliance:</b> respect weight and time-based entry rules</li><li><b>Efficiency:</b> automate expense logging</li><li><b>Accessibility:</b> works regardless of internet</li></ul></div>
+    <div class="card"><h3>Why not Trucker Path / Google Maps?</h3><ul class="tick cross"><li>Lack Indian road height and weight data</li><li>Crashes, wrong fuel-stop information</li><li>Paid features hidden behind a free-looking app</li><li>Navigation and expenses live in separate apps</li></ul></div>
+  </div>
+</div></section>
+
+<section class="s alt" id="modules"><div class="wrap">
+  <div class="head"><p class="eyebrow">Modular design</p><h2>Five building blocks.</h2></div>
+  <div class="flow">
+    <div class="step"><div class="n">01</div><h3>Authentication &amp; Profile</h3><p>Login and vehicle profiles with height, weight and axles.</p></div>
+    <div class="step"><div class="n">02</div><h3>Navigation &amp; Routing</h3><p>Mapbox-powered, truck-legal route engine.</p></div>
+    <div class="step"><div class="n">03</div><h3>POI &amp; Search</h3><p>Diesel stations, parking, weigh stations, rest areas.</p></div>
+    <div class="step"><div class="n">04</div><h3>Expense &amp; Trip Tracker</h3><p>Mileage, tolls, fuel and maintenance logs.</p></div>
+    <div class="step"><div class="n">05</div><h3>Offline Data Manager</h3><p>Local caching and downloaded map regions.</p></div>
+  </div>
+  <div class="grid g3" style="margin-top:36px">
+    <div class="card"><h3>Functional requirements</h3><ul class="tick"><li>Voice turn-by-turn with offline caching</li><li>Full truck dimension and load profile</li><li>Real-time POI search along the route</li><li>Auto mileage and toll logging</li><li>Automatic offline switching</li><li>Driver feedback to report map errors</li></ul></div>
+    <div class="card" id="tech"><h3>Technical architecture</h3><ul class="tick"><li><b>Mobile:</b> Flutter / React Native</li><li><b>Maps:</b> Mapbox Navigation SDK</li><li><b>Backend:</b> Node.js + Express</li><li><b>Data:</b> MongoDB + Redis cache</li><li><b>Hardware:</b> GPS + local storage</li></ul></div>
+    <div class="card"><h3>SDG alignment</h3><ul class="tick"><li>SDG 3 – Road safety (target 3.6)</li><li>SDG 7 &amp; 13 – Fuel waste and emissions</li><li>SDG 9 – Industry &amp; innovation</li><li>SDG 11 – Sustainable cities</li></ul></div>
+  </div>
+</div></section>
+
+<section class="s" id="business"><div class="wrap">
+  <div class="head"><p class="eyebrow">Business aspect</p><h2>Free to start. Revenue from value.</h2></div>
+  <div class="grid g3">
+    <div class="card"><span class="tag">Freemium</span><div class="price">₹0</div><p>Basic navigation and one vehicle profile for individual drivers.</p></div>
+    <div class="card hot"><span class="tag">Pro</span><div class="price">Monthly <small>per driver</small></div><p>Offline maps, advanced toll tracking, route optimisation and multi-stop planning.</p></div>
+    <div class="card"><span class="tag">Fleet · B2B</span><div class="price">Command Center</div><p>Manage vehicles, see live locations, assign trips, export compliance reports.</p></div>
+  </div>
+  <div class="grid g2" style="margin-top:20px">
+    <div class="card"><h3>Affiliate &amp; commissions</h3><p>FASTag recharge and activation commissions, and fuel-network tie-ups (IOCL / HPCL) with driver rewards.</p></div>
+    <div class="card"><h3>Data monetisation (future)</h3><p>Consent-based, anonymised data for pay-as-you-drive insurance and aggregated road-bottleneck insights for planners.</p></div>
+  </div>
+  <div class="card" style="margin-top:20px"><h3>Market projection</h3><p>Target pool of 12M+ heavy vehicle operators. Projected revenue grows from ₹20M in Year 1 to ₹32M by Year 3.</p>
+  <div class="bars" role="img" aria-label="Revenue Year 1 20M, Year 2 26M, Year 3 32M"><div><i style="height:62%"></i>Y1 · ₹20M</div><div><i style="height:78%"></i>Y2 · ₹25M</div><div><i style="height:100%"></i>Y3 · ₹32M</div></div></div>
+</div></section>
+
+<section class="s alt" id="timeline"><div class="wrap">
+  <div class="head"><p class="eyebrow">Roadmap</p><h2>Project timeline: 3-month roadmap</h2></div>
+  <div class="road">
+    <div class="m"><div class="pill">Month 1:<br>Design &amp; Planning</div><ul>
+      <li><b>Week 1:</b> Requirement Analysis &amp; Competitor Deep-Dive</li><li><b>Week 2:</b> UI/UX Wireframing (Mobile &amp; CarPlay)</li><li><b>Week 3:</b> Database Schema Design &amp; API Selection</li><li><b>Week 4:</b> Prototype Setup &amp; Environment Configuration</li></ul></div>
+    <div class="m"><div class="pill">Month 2:<br>Core Development</div><ul>
+      <li><b>Week 5:</b> Authentication Module &amp; Vehicle Profile Setup</li><li><b>Week 6:</b> Mapbox API Integration &amp; Basic Routing</li><li><b>Week 7:</b> Truck-Aware Restriction Logic Implementation</li><li><b>Week 8:</b> Offline Mode &amp; Local Caching Development</li></ul></div>
+    <div class="m"><div class="pill">Month 3:<br>Testing &amp; Finalisation</div><ul>
+      <li><b>Week 9:</b> Expense Tracking &amp; POI Search Development</li><li><b>Week 10:</b> Integration Testing &amp; UI Polish</li><li><b>Week 11:</b> Bug Fixing &amp; Performance Optimisation</li><li><b>Week 12:</b> Final Deployment &amp; Project Presentation</li></ul></div>
+  </div>
+  <p style="margin-top:26px">Tools: <b style="color:var(--ink)">Figma</b> (wireframes) · <b style="color:var(--ink)">Miro</b> (design thinking) · <b style="color:var(--ink)">Jira</b> (sprints) · <b style="color:var(--ink)">Lucidchart</b> (architecture &amp; schemas)</p>
+</div></section>
+
+<section class="s" id="process"><div class="wrap">
+  <div class="head"><p class="eyebrow">Brainstorming &amp; design thinking</p><h2>How the idea took shape.</h2><p style="margin-top:12px">Round-robin brainstorming on Miro turned into the features inside the app.</p></div>
+  <div class="grid g2" style="align-items:start">
+    <div class="vline"><div>Applied Design Thinking</div><div>Used Mind Mapping</div><div>Design Thinking Process</div><div>Understanding User Needs</div></div>
+    <div class="grid g3">
+      <div class="sticky" style="background:#fff2a8">Music feature? Like CarPlay, for Trucks</div>
+      <div class="sticky" style="background:#ff9f9f">Search along Route Feature</div>
+      <div class="sticky" style="background:#d0eaa0">Takes into account where Trucks are allowed</div>
+      <div class="sticky" style="background:#8fb8f8">Separate Profile for each truck type</div>
+      <div class="sticky" style="background:#fff2a8">Truck Maintainance?</div>
+      <div class="sticky" style="background:#d0eaa0">Feature to track expenses in-app</div>
+    </div>
+  </div>
+</div></section>
+
+<section class="s" id="team"><div class="wrap">
+  <div class="head"><p class="eyebrow">Team</p><h2>The AfterMath</h2></div>
+  <div class="grid g4 team">
+    <div class="card"><div class="av">JB</div><h3>John Bosco J</h3><small>311124104060<br>Functional &amp; technical specs</small></div>
+    <div class="card"><div class="av">AM</div><h3>Arockia Mithuna Nimso N</h3><small>311124104013<br>Abstract &amp; problem statement</small></div>
+    <div class="card"><div class="av">CM</div><h3>Christina Moses</h3><small>311124104023<br>Solution &amp; Figma wireframes</small></div>
+    <div class="card"><div class="av">VA</div><h3>V.S. Aishwarya</h3><small>311124104004<br>Modules, SDG &amp; timeline</small></div>
+  </div>
+</div></section>
+
+<footer><div class="wrap"><span>© 2026 ROCK · The AfterMath · Project Driven Learning (CS24423)</span><a href="app.html">Launch demo →</a></div></footer>
+</body>
+</html>

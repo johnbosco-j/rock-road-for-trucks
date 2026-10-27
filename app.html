@@ -1,0 +1,217 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ROCK – Road for Trucks</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@400;600;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body class="app">
+
+<!-- LOGIN (Figma: Login) -->
+<div class="login" id="login">
+  <canvas id="bgForest" aria-hidden="true"></canvas>
+  <div class="box">
+    <div class="form">
+      <div class="logo">Rock</div>
+      <h2>Get where you<br>need to go</h2>
+      <div class="soc"><button type="button" data-soc aria-label="Apple">&#63743;</button><button type="button" data-soc aria-label="Google"><span style="background:conic-gradient(#ea4335 0 25%,#fbbc05 0 50%,#34a853 0 75%,#4285f4 0);-webkit-background-clip:text;background-clip:text;color:transparent">G</span></button><button type="button" data-soc aria-label="Facebook" style="color:#1877f2">f</button></div>
+      <p style="font-size:.78rem">or</p>
+      <form id="loginForm" novalidate>
+        <div class="field" id="nameField"><input id="lname" placeholder="Full name" autocomplete="name"></div>
+        <div class="field"><input id="lemail" type="email" placeholder="Email" autocomplete="email" required></div>
+        <div class="field"><input id="lpass" type="password" placeholder="Password" autocomplete="current-password" required></div>
+        <div class="err" id="lerr" role="alert"></div>
+        <button class="btn dark" type="submit" id="lsubmit">Start</button>
+      </form>
+      <p style="font-size:.8rem;margin-top:14px"><span id="swTxt">Already Have An Account?</span> <a href="#" id="swMode" style="color:#111;font-weight:700">Log In</a></p>
+      <p style="font-size:.7rem;margin-top:10px"><a href="index.html" style="text-decoration:underline">Back to site</a> · Accounts stay on this device</p>
+    </div>
+    <div class="art">
+      <canvas id="cardArt" aria-hidden="true"></canvas>
+      <div class="pill" style="left:36%;top:30%">
+        <b>1,2 km</b>left to your<br>destination
+      </div>
+      <svg style="position:absolute;left:44%;top:46%;width:2px;height:80px" aria-hidden="true"><line x1="1" y1="0" x2="1" y2="80" stroke="#fff" stroke-width="1.5"/></svg>
+      <span style="position:absolute;left:calc(44% - 4px);top:calc(46% + 78px);width:10px;height:10px;border-radius:50%;background:#fff"></span>
+    </div>
+  </div>
+</div>
+
+<!-- APP (Figma: Overview rail + pages Home / Travel / Profile / Trucks) -->
+<div class="shell hide" id="shell">
+  <aside class="side">
+    <button class="rb on" data-v="home" aria-label="Home" title="Home"><svg viewBox="0 0 24 24"><path d="M2 7h12v9H2zM14 10h4l3 3v3h-7z"/><circle cx="7" cy="18" r="1.8"/><circle cx="17" cy="18" r="1.8"/></svg></button>
+    <button class="rb" data-v="play" aria-label="TruckPlay" title="TruckPlay"><svg viewBox="0 0 24 24"><path d="M9 18V6l10-2v12"/><circle cx="6.5" cy="18" r="2.5"/><circle cx="16.5" cy="16" r="2.5"/></svg></button>
+    <button class="rb" data-v="expenses" aria-label="Expenses" title="Expenses"><svg viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="12" rx="3"/><circle cx="12" cy="12" r="2.6"/></svg></button>
+    <button class="rb" data-v="map" aria-label="Travel" title="Travel"><svg viewBox="0 0 24 24"><path d="M3 6l6-2 6 2 6-2v14l-6 2-6-2-6 2zM9 4v14M15 6v14"/></svg></button>
+    <button class="rb plus" data-v="profile" aria-label="Profile" title="Profile"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></button>
+    <div class="sp"></div>
+    <div class="rplayer" aria-label="TruckPlay mini player">
+      <button class="rp" id="rpPlay" aria-label="Play or pause">▶</button>
+      <div class="vs" id="rpVol" role="slider" aria-label="Volume" aria-valuemin="0" aria-valuemax="100" aria-valuenow="50" tabindex="0"><i></i><b>♪</b></div>
+      <button class="rp" id="rpNext" aria-label="Next track" style="background:transparent;color:var(--maroon)">⏭</button>
+      <small></small>
+    </div>
+  </aside>
+  <main class="main"><div class="frame">
+
+    <!-- HOME / OVERVIEW -->
+    <section data-view="home">
+      <div class="hello"><p id="hello">Welcome</p><span class="chip"><span class="dot" id="netdot"></span><span id="nettxt">Online</span></span></div>
+      <div class="tiles">
+        <div class="tile" data-go="trucks" tabindex="0" role="button" id="tTrucks"><div class="cap"><h3>Trucks</h3><span class="go">Your Truck Today</span></div></div>
+        <div class="tile" data-go="map" tabindex="0" role="button" id="tMap"><div class="cap"><h3>Map</h3><span class="go">Start Navigation</span></div></div>
+        <div class="tile" data-go="play" tabindex="0" role="button" id="tPlay"><div class="cap"><h3>TruckPlay</h3><span class="go">Start</span></div></div>
+        <div class="tile" data-go="expenses" tabindex="0" role="button" id="tExp"><div class="cap"><h3>Expenses</h3><span class="go">Track</span></div></div>
+      </div>
+    </section>
+
+    <!-- TRUCKS (Figma: Trucks wireframe) -->
+    <section data-view="trucks" class="hide">
+      <div class="bar"><h2>Your Truck Today</h2><span class="chip" id="vehChip2">–</span></div>
+      <div class="typechips" id="typeChips"></div>
+      <div class="bigcard">
+        <div id="truckViz"></div>
+        <div>
+          <h3 id="bcName" style="margin-bottom:10px">–</h3>
+          <div class="spec"><div><small>Height</small><b id="sH">–</b></div><div><small>Gross weight</small><b id="sW">–</b></div><div><small>Width</small><b id="sWd">–</b></div><div><small>Axles</small><b id="sA">–</b></div></div>
+          <p class="note" style="margin-top:10px">Routes, alerts and cost estimates all use this truck.</p>
+        </div>
+      </div>
+      <div class="split">
+        <div class="panel">
+          <h3 class="sm" id="formTitle">Add a truck</h3>
+          <form id="vehForm" style="margin-top:10px">
+            <div class="field"><label for="vName">Name</label><input id="vName" required></div>
+            <div class="row2"><div class="field"><label for="vH">Height (m)</label><input id="vH" type="number" step="0.1" required></div><div class="field"><label for="vW">Weight (t)</label><input id="vW" type="number" step="0.5" required></div></div>
+            <div class="row2"><div class="field"><label for="vWd">Width (m)</label><input id="vWd" type="number" step="0.1" value="2.5"></div><div class="field"><label for="vA">Axles</label><select id="vA"><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option></select></div></div>
+            <div class="row2"><div class="field"><label for="vM">Mileage (km/l)</label><input id="vM" type="number" step="0.1" required></div><div class="field"><label for="vD">Diesel ₹/l</label><input id="vD" type="number" step="0.1"></div></div>
+            <button class="btn primary" style="width:100%;justify-content:center">Save as new &amp; set active</button>
+          </form>
+        </div>
+        <div>
+          <div class="panel" style="margin-bottom:18px"><h3 class="sm">Truck maintenance</h3>
+            <div class="row2" style="margin-top:10px"><div class="field"><label for="mOdo">Odometer (km)</label><input id="mOdo" type="number" min="0"></div><div class="field"><label for="mInt">Service every (km)</label><input id="mInt" type="number" min="500" step="500"></div></div>
+            <div class="bar2" id="mBar"><i></i></div><p class="note" id="mTxt">–</p>
+            <button class="btn ghost" id="mDone" type="button">Log service done</button></div>
+          <div class="panel"><h3 class="sm">Saved trucks</h3><div id="vehList"></div></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TRAVEL -->
+    <section data-view="map" class="hide">
+      <div class="bar"><h2>Travel</h2><span class="chip" id="vehChip">–</span></div>
+      <div class="split">
+        <div class="panel side-panel">
+          <div class="field"><label for="from">From</label><input id="from" placeholder="City, place, or lat,lng" value="Koyambedu, Chennai"></div>
+          <div class="field"><label for="to">To</label><input id="to" placeholder="Destination" value="Sriperumbudur"></div>
+          <div style="display:flex;gap:8px"><button class="btn primary" id="go" style="flex:1;justify-content:center">Plan truck route</button><button class="btn ghost" id="locate" title="Use my location" aria-label="Use my location">📍</button></div>
+          <div id="result"></div>
+          <div id="navctl" class="hide">
+            <div class="row2" style="margin-top:12px">
+              <button class="btn primary" id="startNav" style="justify-content:center">▶ Start</button>
+              <select id="simMode" aria-label="Mode" style="padding:10px;border-radius:99px;background:#fff;border:1px solid var(--line)"><option value="1">Simulate 1×</option><option value="8" selected>Simulate 8×</option><option value="30">Simulate 30×</option><option value="gps">Live GPS</option></select>
+            </div>
+            <label style="display:flex;gap:8px;align-items:center;margin-top:10px;font-size:.85rem"><input type="checkbox" id="voice" checked> Voice guidance</label>
+          </div>
+          <hr class="sep">
+          <h3 class="sm">Search along route</h3>
+          <p class="note">Truck-friendly stops along your planned route (or around the map centre if none).</p>
+          <div class="chips" id="poiBtns"><button data-poi="fuel">⛽ Fuel</button><button data-poi="parking">🅿 Parking</button><button data-poi="rest">🛏 Rest</button><button data-poi="weigh">⚖ Weigh</button></div>
+          <div id="pois"></div>
+          <hr class="sep">
+          <h3 class="sm">Where trucks are allowed</h3>
+          <p class="note">Limits come from OpenStreetMap tags (height, weight, width, HGV bans). Add your own below.</p>
+          <div class="row2"><div class="field"><label for="rh">Height limit (m)</label><input id="rh" type="number" step="0.1" value="3.8"></div><button class="btn ghost" id="addMode" style="align-self:end;margin-bottom:10px;justify-content:center">+ On map</button></div>
+          <hr class="sep">
+          <h3 class="sm">Offline maps</h3>
+          <p class="note">Save the area you are viewing so it still shows with no signal.</p>
+          <button class="btn ghost" id="dl" style="width:100%;justify-content:center">⬇ Download visible area</button>
+          <p class="note" id="dlStat"></p>
+        </div>
+        <div class="mapwrap">
+          <div id="map" role="application" aria-label="Map"></div>
+          <div class="hud hide" id="hud">
+            <div class="hud-top"><div class="hud-ic" id="hIc">⬆</div><div><b id="hDist">–</b><div id="hTxt">–</div></div><button id="stopNav" aria-label="End navigation">✕</button></div>
+            <div class="hud-warn hide" id="hWarn"></div>
+            <div class="hud-bot"><div><b id="hRem">–</b><small>remaining</small></div><div><b id="hEta">–</b><small>ETA</small></div><div><b id="hSpd">–</b><small>km/h</small></div></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- EXPENSES -->
+    <section data-view="expenses" class="hide">
+      <div class="bar"><h2>Expenses</h2></div>
+      <div class="kpis">
+        <div class="kpi"><small>Trips logged</small><b id="kTrips">0</b></div>
+        <div class="kpi"><small>Spent this month</small><b id="kSpend">₹0</b></div>
+        <div class="kpi"><small>Km driven</small><b id="kKm">0</b></div>
+        <div class="kpi"><small>Cost per km</small><b id="cpk">–</b></div>
+      </div>
+      <div class="split">
+        <div class="panel">
+          <form id="expForm">
+            <div class="field"><label for="eType">Type</label><select id="eType"><option>Fuel</option><option>Toll</option><option>Maintenance</option><option>Parking</option><option>Other</option></select></div>
+            <div class="row2"><div class="field"><label for="eAmt">Amount (₹)</label><input id="eAmt" type="number" min="1" required></div><div class="field"><label for="eKm">Km (optional)</label><input id="eKm" type="number" min="0"></div></div>
+            <div class="field"><label for="eNote">Note</label><input id="eNote" placeholder="Where / what"></div>
+            <button class="btn primary" style="width:100%;justify-content:center">Add expense</button>
+          </form>
+          <button class="btn ghost" id="csv" style="width:100%;justify-content:center;margin-top:10px">⬇ Export CSV</button>
+        </div>
+        <div>
+          <div class="panel" style="margin-bottom:18px"><h3 class="sm">Last 6 months</h3><div class="chart" id="chart"></div></div>
+          <div class="panel"><table><thead><tr><th>Date</th><th>Type</th><th>Note</th><th>Km</th><th>₹</th><th></th></tr></thead><tbody id="rows"></tbody></table><p id="empty" style="padding:14px 0">No expenses yet. Plan and drive a route, or add one here.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TRUCKPLAY -->
+    <section data-view="play" class="hide">
+      <div class="bar"><h2>TruckPlay</h2><span class="chip">CarPlay-style music for trucks · works offline</span></div>
+      <div class="split">
+        <div class="panel player">
+          <div class="vinyl" id="vinyl"><div class="lbl">ROCK</div></div>
+          <h3 id="tName" style="margin-top:18px">–</h3><p id="tMood">–</p>
+          <div class="prog"><i id="tBar"></i></div><div class="tm"><span id="tEl">0:00</span><span>∞</span></div>
+          <div class="ctrls"><button id="pPrev" aria-label="Previous">⏮</button><button id="pPlay" class="big" aria-label="Play">▶</button><button id="pNext" aria-label="Next">⏭</button></div>
+          <label class="vol">🔈 <input type="range" id="pVol" min="0" max="1" step="0.01" value="0.5" aria-label="Volume"></label>
+        </div>
+        <div class="panel"><h3 class="sm">Playlist</h3><div id="tracks"></div><p class="note" style="margin-top:12px">Calm, loop-based tracks synthesised on your device, so they play with no signal and keep the driver alert.</p></div>
+      </div>
+    </section>
+
+    <!-- PROFILE -->
+    <section data-view="profile" class="hide">
+      <div class="bar"><h2>Profile</h2></div>
+      <div class="split">
+        <div class="panel">
+          <h3 class="sm">Account</h3><p id="acct" style="margin:6px 0 12px"></p>
+          <button class="btn ghost" id="logout" style="width:100%;justify-content:center">↩ Log out</button>
+          <hr class="sep">
+          <h3 class="sm">Mapbox (optional)</h3>
+          <p class="note">Paste a public token (<code>pk.</code>) to use Mapbox maps and routing with your truck's dimensions. Stored only in this browser.</p>
+          <div class="field"><input id="mbt" placeholder="pk.…"></div><button class="btn ghost" id="mbSave">Save token</button>
+          <hr class="sep">
+          <button class="btn ghost" id="clear" style="width:100%;justify-content:center">Clear all my data</button>
+        </div>
+        <div>
+          <div class="panel"><h3 class="sm">Report a map issue</h3>
+            <form id="fbForm" style="margin-top:10px"><div class="row2"><div class="field"><select id="fbType"><option>Wrong road / one-way</option><option>Low bridge missing</option><option>Weight limit missing</option><option>New fuel / parking stop</option><option>Other</option></select></div><div class="field"><input id="fbTxt" placeholder="What did you find?" required></div></div><button class="btn primary">Submit (uses map centre)</button></form>
+            <div id="fbList" style="margin-top:10px"></div></div>
+        </div>
+      </div>
+    </section>
+  </div></main>
+</div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="art.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
