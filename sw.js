@@ -1,6 +1,6 @@
 // Caches the app shell and OSM map tiles so ROCK keeps working offline.
-const SHELL = 'rock-shell-v3', TILES = 'rock-tiles-v1';
-const FILES = ['./', 'index.html', 'app.html', 'styles.css', 'app.js', 'art.js'];
+const SHELL = 'rock-shell-v4', TILES = 'rock-tiles-v1';
+const FILES = ['./', 'index.html', 'app.html', 'styles.css', 'app.js', 'art.js', 'config.js'];
 self.addEventListener('install', e => e.waitUntil(caches.open(SHELL).then(c => c.addAll(FILES)).then(() => self.skipWaiting())));
 self.addEventListener('activate', e => e.waitUntil(caches.keys().then(ks => Promise.all(ks.filter(k => k.startsWith('rock-shell') && k !== SHELL).map(k => caches.delete(k)))).then(() => self.clients.claim())));
 // Leaflet and the downloader use the same URL form, so tiles match across a/b/c subdomains.

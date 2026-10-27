@@ -1,6 +1,7 @@
 (() => {
 const $ = (s, r = document) => r.querySelector(s);
 const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+const mbToken = () => { try { return JSON.parse(localStorage.getItem('rock.mbt') || '""') || (window.ROCK_CONFIG && ROCK_CONFIG.mapboxToken) || ''; } catch { return (window.ROCK_CONFIG && ROCK_CONFIG.mapboxToken) || ''; } };
 const store = {
   get(k, d) { try { const v = localStorage.getItem('rock.' + k); return v ? JSON.parse(v) : d; } catch { return d; } },
   set(k, v) { try { localStorage.setItem('rock.' + k, JSON.stringify(v)); } catch {} },
@@ -58,7 +59,7 @@ function start() {
   $('#login').classList.add('hide'); $('#shell').classList.remove('hide');
   $('#hello').textContent = 'Welcome, ' + user.name;
   $('#acct').textContent = `${user.name} · ${user.email}`;
-  $('#mbt').value = store.get('mbt', '');
+  $('#mbt').value = (() => { try { return JSON.parse(localStorage.getItem('rock.mbt') || '""'); } catch { return ''; } })();
   go(location.hash.slice(1) || 'home');
 }
 
@@ -93,6 +94,8 @@ const decimate = (c, n) => { if (c.length <= n) return c; const s = (c.length - 
 
 async function geocode(q) {
   const m = q.match(/^\s*(-?\d+\.?\d*)\s*,\s*(-?\d+\.?\d*)\s*$/); if (m) return [+m[1], +m[2]];
+  const tk = mbToken();
+  if (tk && navigator.onLine) { try { const j = await (await fetch(`https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(q)}.json?country=in&limit=1&access_token=${tk}`)).json(); if (j.features && j.features[0]) return [j.features[0].center[1], j.features[0].center[0]]; } catch {} }
   const r = await fetch('https://nominatim.openstreetmap.org/search?format=json&limit=1&countrycodes=in&q=' + encodeURIComponent(q));
   const j = await r.json(); if (!j.length) throw new Error('Could not find “' + q + '”');
   return [+j[0].lat, +j[0].lon];
@@ -154,7 +157,7 @@ const customViolations = (coords, v) => restrictions.filter(r => r.h <= v.h && m
 /* ================= map ================= */
 let map, layers, routeLayers = [], pickMode = false, curOpts = null, curSel = 0, curEnds = null, poiLayer;
 function tiles() {
-  const t = store.get('mbt', '');
+  const t = mbToken();
   return t ? L.tileLayer(`https://api.mapbox.com/styles/v1/mapbox/streets-v12/tiles/512/{z}/{x}/{y}@2x?access_token=${t}`, { tileSize: 512, zoomOffset: -1, maxZoom: 19, attribution: '© Mapbox © OSM' })
            : L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19, attribution: '© OpenStreetMap' });
 }
@@ -192,7 +195,7 @@ function stepText(s) {
 }
 const ARROWS = { left: '⬅', right: '➡', 'slight left': '↖', 'slight right': '↗', 'sharp left': '↩', 'sharp right': '↪', uturn: '⤾', straight: '⬆' };
 async function fetchRoutes(a, b, v) {
-  const tk = store.get('mbt', '');
+  const tk = mbToken();
   if (tk && navigator.onLine) {
     try {
       const u = `https://api.mapbox.com/directions/v5/mapbox/driving/${a[1]},${a[0]};${b[1]},${b[0]}?alternatives=true&overview=full&geometries=geojson&steps=true&max_height=${v.h}&max_width=${v.wd || 2.5}&max_weight=${v.w}&access_token=${tk}`;
@@ -286,7 +289,7 @@ $('#dl').onclick = async () => {
     for (let x = x0; x <= x1; x++) for (let y = y0; y <= y1; y++) tiles.push(`https://tile.openstreetmap.org/${z}/${x}/${y}.png`);
   }
   if (tiles.length > 220) return toast(`Area too large (${tiles.length} tiles). Zoom in first.`);
-  if (store.get('mbt', '')) toast('Mapbox tiles are cached as you view them');
+  if (mbToken()) toast('Mapbox tiles are cached as you view them');
   let n = 0; $('#dl').disabled = true;
   for (const u of tiles) { try { await fetch(u, { mode: 'no-cors' }); } catch {} $('#dlStat').textContent = `Saved ${++n}/${tiles.length} tiles`; await sleep(60); }
   $('#dl').disabled = false; $('#dlStat').textContent = `✓ ${tiles.length} tiles saved for offline use`;
@@ -379,7 +382,7 @@ document.addEventListener('click', e => {
   const s = e.target.closest('[data-use]'); if (s) { activeId = +s.dataset.use; save(); render(); }
   const d = e.target.closest('[data-rm]'); if (d && vehicles.length > 1) { vehicles = vehicles.filter(v => v.id !== +d.dataset.rm); if (!vehicles.some(v => v.id === activeId)) activeId = vehicles[0].id; save(); render(); }
 });
-$('#mbSave').onclick = () => { const t = $('#mbt').value.trim(); if (t && !t.startsWith('pk.')) return toast('That is not a public token (must start with pk.)'); store.set('mbt', t); toast(t ? 'Saved. Reload to apply Mapbox' : 'Token removed'); };
+$('#mbSave').onclick = () => { const t = $('#mbt').value.trim(); if (t && !t.startsWith('pk.')) return toast('That is not a public token (must start with pk.)'); store.set('mbt', t); toast(t ? 'Saved. Reload to apply' : 'Custom token removed. Default is used'); };
 $('#fbForm').addEventListener('submit', e => {
   e.preventDefault(); const c = map ? map.getCenter() : { lat: 13.0, lng: 80.17 };
   feedback.unshift({ id: Date.now(), d: new Date().toISOString().slice(0, 10), type: $('#fbType').value, txt: $('#fbTxt').value.trim(), lat: +c.lat.toFixed(4), lng: +c.lng.toFixed(4) }); save(); e.target.reset(); render(); toast('Report saved. Thank you!');

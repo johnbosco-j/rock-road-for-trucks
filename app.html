@@ -195,7 +195,7 @@
           <button class="btn ghost" id="logout" style="width:100%;justify-content:center">↩ Log out</button>
           <hr class="sep">
           <h3 class="sm">Mapbox (optional)</h3>
-          <p class="note">Paste a public token (<code>pk.</code>) to use Mapbox maps and routing with your truck's dimensions. Stored only in this browser.</p>
+          <p class="note">Mapbox maps, routing and search are on by default. Paste your own public token (<code>pk.</code>) here to override it. Stored only in this browser.</p>
           <div class="field"><input id="mbt" placeholder="pk.…"></div><button class="btn ghost" id="mbSave">Save token</button>
           <hr class="sep">
           <button class="btn ghost" id="clear" style="width:100%;justify-content:center">Clear all my data</button>
@@ -211,6 +211,7 @@
 </div>
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="config.js"></script>
 <script src="art.js"></script>
 <script src="app.js"></script>
 </body>
