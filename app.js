@@ -208,7 +208,7 @@ async function fetchRoutes(a, b, v) {
 }
 // Rough Indian national-highway toll estimate (₹ per km, 2-axle base, scaled by axles). Estimate only.
 const tollFor = (km, axles) => km < 20 ? 0 : km * 2.6 * ({ 2: 1, 3: 1.1, 4: 1.75, 5: 2.1, 6: 2.1 }[axles] || 1);
-const TRUCK_FACTOR = 1.3; // trucks average slower than cars
+const TRUCK_FACTOR = { Mapbox: 1.1, OSRM: 1.3 }; // trucks average slower than cars; Mapbox times already include typical traffic
 
 $('#go').onclick = async () => {
   if (nav) stopNav();
@@ -219,7 +219,7 @@ $('#go').onclick = async () => {
     const opts = routes.slice(0, 3).map(rt => {
       const coords = rt.geometry.coordinates.map(c => [c[1], c[0]]), km = rt.distance / 1000;
       const steps = (rt.legs || []).flatMap(l => l.steps || []).map(s => ({ text: stepText(s), dist: s.distance, name: s.name, mod: (s.maneuver || {}).modifier, type: (s.maneuver || {}).type }));
-      return { coords, km, min: rt.duration / 60 * TRUCK_FACTOR, toll: tollFor(km, v.a), fuel: km / v.m * (v.d || 92), steps, bad: customViolations(coords, v), osm: null };
+      return { coords, km, min: rt.duration / 60 * (TRUCK_FACTOR[src] || 1.3), toll: tollFor(km, v.a), fuel: km / v.m * (v.d || 92), steps, bad: customViolations(coords, v), osm: null };
     });
     curEnds = [a, b]; curOpts = opts; show(0, { src, checking: true, osmOk: true });
     let osmOk = true, partial = false;
@@ -238,10 +238,10 @@ function show(sel, meta) {
   map.fitBounds(L.latLngBounds(o.coords), { padding: [30, 30] });
   const note = info.checking ? '<div class="alert warn">⏳ Checking OpenStreetMap for height, weight and width limits… route shown below is not verified yet.</div>' : !info.osmOk ? '<div class="alert warn">⚠ Could not reach the OpenStreetMap restriction service. Only your own restrictions were checked.</div>' : info.partial ? `<div class="alert warn">⚠ Restrictions checked for the first ${Math.round(o.osm.checkedKm)} km only.</div>` : '';
   $('#result').innerHTML = note +
-    (o.bad.length ? `<div class="alert bad">⛔ ${o.bad.length} restriction(s) affect ${esc(v.name)}:<br>${o.bad.slice(0, 5).map(x => '• ' + esc(x.name)).join('<br>')}</div>`
+    (info.checking ? '' : o.bad.length ? `<div class="alert bad">⛔ ${o.bad.length} restriction(s) affect ${esc(v.name)}:<br>${o.bad.slice(0, 5).map(x => '• ' + esc(x.name)).join('<br>')}</div>`
       : `<div class="alert ok">✓ No known restrictions for ${esc(v.name)} (${v.h} m · ${v.w} t · ${v.wd || 2.5} m wide).</div>`) +
     `<div style="margin-top:10px;font-size:.9rem"><b>${o.km.toFixed(1)} km</b> · ${fmtMin(o.min)} (truck est.)<br><span style="color:var(--mute)">Toll ≈ ${inr(o.toll)} · Fuel ≈ ${inr(o.fuel)}</span></div>` +
-    (opts.length > 1 ? '<p class="note" style="margin-top:10px">Alternatives</p>' + opts.map((x, i) => `<div class="routeopt ${i === sel ? 'on' : ''}" data-r="${i}"><b>${x.km.toFixed(1)} km · ${fmtMin(x.min)}</b> ${x.bad.length ? '⛔ ' + x.bad.length + ' restricted' : '✓ clear'}</div>`).join('') : '') +
+    (opts.length > 1 ? '<p class="note" style="margin-top:10px">Alternatives</p>' + opts.map((x, i) => `<div class="routeopt ${i === sel ? 'on' : ''}" data-r="${i}"><b>${x.km.toFixed(1)} km · ${fmtMin(x.min)}</b> ${info.checking ? '' : x.bad.length ? '⛔ ' + x.bad.length + ' restricted' : '✓ clear'}</div>`).join('') : '') +
     `<p class="note">Routing: ${info.src || 'saved'} · limits only as complete as OpenStreetMap data, so always obey road signs.</p>`;
   $$('.routeopt').forEach(el => el.onclick = () => show(+el.dataset.r));
   $('#navctl').classList.remove('hide');
@@ -304,7 +304,7 @@ $('#startNav').onclick = () => {
   let acc = 0; const ends = o.steps.map(s => acc += s.dist);
   const along = o.bad.map(b => { let bi = 0, bd = Infinity; o.coords.forEach((c, i) => { const d = Math.abs(c[0] - b.lat) + Math.abs(c[1] - b.lng); if (d < bd) { bd = d; bi = i; } }); return { b, at: cum[bi], warned: false }; });
   nav = { o, cum, ends, i: 0, d: 0, mode, along, said: -1, speed: 0, mult: mode === 'gps' ? 1 : +mode, logged: false, last: Date.now() };
-  $('#hud').classList.remove('hide'); $('#startNav').textContent = '■ Running';
+  $('#hud').classList.remove('hide'); $('.mapwrap').classList.add('nav'); setTimeout(() => map.invalidateSize(), 50); $('#startNav').textContent = '■ Running';
   nav.marker = L.marker(o.coords[0], { icon: L.divIcon({ className: '', html: '<div class="truckpin">🚚</div>', iconSize: [30, 30] }), zIndexOffset: 1000 }).addTo(map);
   map.setView(o.coords[0], 16);
   speak(o.steps[0] ? o.steps[0].text : 'Starting navigation');
@@ -355,7 +355,7 @@ function arrive() {
 }
 function stopNav() {
   if (!nav) return; clearInterval(nav.timer); if (nav.watch != null) navigator.geolocation.clearWatch(nav.watch);
-  nav.marker.remove(); nav = null; speechSynthesis && speechSynthesis.cancel(); $('#hud').classList.add('hide'); $('#startNav').textContent = '▶ Start';
+  nav.marker.remove(); nav = null; speechSynthesis && speechSynthesis.cancel(); $('#hud').classList.add('hide'); $('.mapwrap').classList.remove('nav'); setTimeout(() => map.invalidateSize(), 50); $('#startNav').textContent = '▶ Start';
 }
 $('#stopNav').onclick = stopNav;
 

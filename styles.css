@@ -219,3 +219,5 @@ th,td{padding:11px 8px;text-align:left;border-bottom:1px solid var(--line)}th{co
 .trk:hover{background:#00000006}.trk.on{border-color:var(--maroon);background:#fff}
 .trk small{color:var(--mute)}
 @media(min-width:701px){.tiles{grid-auto-rows:1fr;min-height:calc(100vh - 150px)}.tile{min-height:200px}}
+@media(max-width:980px){.mapwrap{order:-1;position:sticky;top:0;z-index:20;margin:-6px -6px 12px}#map{height:38vh;min-height:240px}}
+@media(max-width:980px){.mapwrap.nav #map{height:62vh}}
