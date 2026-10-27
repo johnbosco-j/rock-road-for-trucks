@@ -67,7 +67,7 @@ window.ART = (() => {
   /** Expenses chart: olive area + orange dots + vertical month lines, drawn from real monthly totals. */
   const expenses = totals => {
     const has = totals.some(v => v > 0), d = has ? totals : [320, 1200, 900, 1500, 1100, 1800, 1400, 2900, 3900, 3100, 1700, 0].map(v => v), mx = Math.max(...d, 1);
-    const x0 = 30, x1 = 490, base = 205, top = 50, X = i => x0 + i * (x1 - x0) / 11, Y = v => base - v / mx * (base - top);
+    const x0 = 62, x1 = 458, base = 205, top = 50, X = i => x0 + i * (x1 - x0) / 11, Y = v => base - v / mx * (base - top);
     const pts = d.map((v, i) => [X(i), Y(v)]); let line = `M${pts[0][0]} ${pts[0][1]}`;
     for (let i = 1; i < pts.length; i++) { const cx = (pts[i - 1][0] + pts[i][0]) / 2; line += ` C${cx} ${pts[i - 1][1]} ${cx} ${pts[i][1]} ${pts[i][0]} ${pts[i][1]}`; }
     return T(`<rect width="520" height="270" fill="#d8d9d3"/>
